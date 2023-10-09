@@ -31,6 +31,8 @@ function update() {
 	}
 }
 
+document.documentElement.style.cursor = 'none';
+
 window.mainInterval = setInterval(() => {
 	update()
 }, RATE)
