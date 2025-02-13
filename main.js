@@ -1,10 +1,20 @@
 const SPEED = 16;
 const RATE = 1;
-const IMAGE_DIMENSIONS = [417, 180];
 
-let currentDirection = [Math.random() < 0.5 ? 1 : -1, Math.random() < 0.5 ? 1 : -1];
-let currentPositionX = Math.floor((Math.random() * (window.innerWidth - IMAGE_DIMENSIONS[0])) / SPEED) * SPEED;
-let currentPositionY = Math.floor((Math.random() * (window.innerHeight - IMAGE_DIMENSIONS[1])) / SPEED) * SPEED;
+const IMAGE_FULL = "no_signal_v1"
+const IMAGE_SMALL = "no_signal_v1_small"
+const IMAGE_SMALLEST = "no_signal_v1_smallest"
+const IMAGE_DIMENSIONS_FULL = [417, 180];
+const IMAGE_DIMENSIONS_SMALL = [287, 91];
+const IMAGE_DIMENSIONS_SMALLEST = [84, 91];
+
+
+let currentImageDimensions = IMAGE_DIMENSIONS_FULL;
+let currentImage = IMAGE_FULL
+
+let currentDirection = [-1, 1];
+let currentPositionX = 0;
+let currentPositionY = 0;
 
 const noSignal = document.getElementById("no-signal");
 
@@ -20,10 +30,27 @@ function update() {
 	noSignal.style.left = `${Math.floor(currentPositionX)}px`;
 	noSignal.style.top = `${Math.floor(currentPositionY)}px`;
 
+	if (IMAGE_DIMENSIONS_FULL[1] > (window.innerWidth / 4)) {
+		if (IMAGE_DIMENSIONS_SMALL[1] > (window.innerWidth / 4)) {
+			currentImage = IMAGE_SMALLEST;
+			currentImageDimensions = IMAGE_DIMENSIONS_SMALLEST;
+		}
+		else {
+			currentImage = IMAGE_SMALL;
+			currentImageDimensions = IMAGE_DIMENSIONS_SMALL;
+		}
+	}
+	else {
+		currentImage = IMAGE_FULL;
+		currentImageDimensions = IMAGE_DIMENSIONS_FULL;
+	}
+
+	noSignal.src = `res/${currentImage}.webp`
+
 	// x
-	if ((currentPositionX + IMAGE_DIMENSIONS[0] >= window.innerWidth)) {
+	if ((currentPositionX + currentImageDimensions[0] >= window.innerWidth)) {
 		currentDirection[0] *= -1
-		currentPositionX = window.innerWidth - IMAGE_DIMENSIONS[0]
+		currentPositionX = window.innerWidth - currentImageDimensions[0]
 		if (Math.random() <= 0.12) {
 			currentDirection[1] *= -1
 		}
@@ -38,9 +65,9 @@ function update() {
 	}
 
 	// y
-	if ((currentPositionY + IMAGE_DIMENSIONS[1] >= window.innerHeight)) {
+	if ((currentPositionY + currentImageDimensions[1] >= window.innerHeight)) {
 		currentDirection[1] *= -1
-		currentPositionY = window.innerHeight - IMAGE_DIMENSIONS[1]
+		currentPositionY = window.innerHeight - currentImageDimensions[1]
 		if (Math.random() <= 0.12) {
 			currentDirection[0] *= -1
 		}
@@ -95,8 +122,8 @@ document.onkeydown = function (event) {
 	switch (event.key) {
 		case "r":
 			currentDirection = [Math.random() < 0.5 ? 1 : -1, Math.random() < 0.5 ? 1 : -1];
-			currentPositionX = Math.floor((Math.random() * (window.innerWidth - IMAGE_DIMENSIONS[0])) / SPEED) * SPEED;
-			currentPositionY = Math.floor((Math.random() * (window.innerHeight - IMAGE_DIMENSIONS[1])) / SPEED) * SPEED;
+			currentPositionX = Math.floor((Math.random() * (window.innerWidth - currentImageDimensions[0])) / SPEED) * SPEED;
+			currentPositionY = Math.floor((Math.random() * (window.innerHeight - currentImageDimensions[1])) / SPEED) * SPEED;
 			update();
 			break
 		case "ArrowRight":
@@ -128,6 +155,14 @@ document.onkeydown = function (event) {
 			break
 	}
 }
+
+update()
+
+currentDirection = [Math.random() < 0.5 ? 1 : -1, Math.random() < 0.5 ? 1 : -1];
+currentPositionX = Math.floor((Math.random() * (window.innerWidth - currentImageDimensions[0])) / SPEED) * SPEED;
+currentPositionY = Math.floor((Math.random() * (window.innerHeight - currentImageDimensions[1])) / SPEED) * SPEED;
+
+update()
 
 document.documentElement.onclick = () => {
 	toggleFullscreen();
